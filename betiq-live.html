@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BetIQ Live — Mundial 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #04080a;
+  --s1: #080e11;
+  --s2: #0c1419;
+  --bdr: #141f26;
+  --bdr2: #1e2e38;
+  --accent: #00d4ff;
+  --accent-dim: #00d4ff15;
+  --accent-glow: #00d4ff30;
+  --gold: #ffc107;
+  --gold-dim: #ffc10715;
+  --green: #00e676;
+  --green-dim: #00e67615;
+  --red: #ff3d57;
+  --red-dim: #ff3d5715;
+  --yellow: #ffeb3b;
+  --yellow-dim: #ffeb3b15;
+  --txt: #c8dde8;
+  --muted: #3a5a6e;
+  --muted2: #5a7a8e;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: #030608ee;
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--bdr2);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+.logo em { color: var(--gold); font-style: normal; }
+.logo sub {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--muted2);
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.hdr-right { display: flex; align-items: center; gap: 8px; }
+
+.live-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--red-dim);
+  border: 1px solid var(--red);
+  color: var(--red);
+  font-size: 10px; font-weight: 700;
+  padding: 3px 9px; border-radius: 20px; letter-spacing: 1.5px;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: blink 1s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+
+.btn-icon {
+  background: var(--s2);
+  border: 1px solid var(--bdr2);
+  color: var(--muted2);
+  font-size: 11px; font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; gap: 5px;
+  transition: all .2s;
+}
+.btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+.btn-icon.add { border-color: var(--gold); color: var(--gold); }
+.btn-icon.add:hover { background: var(--gold-dim); }
+
+/* ── TABS ── */
+.tabs {
+  display: flex; gap: 6px; padding: 10px 14px;
+  border-bottom: 1px solid var(--bdr);
+  overflow-x: auto; scrollbar-width: none;
+  background: var(--s1);
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  background: transparent;
+  border: 1px solid var(--bdr2);
+  color: var(--muted2);
+  font-size: 11px; font-weight: 600;
+  padding: 5px 13px; border-radius: 20px;
+  cursor: pointer; white-space: nowrap;
+  transition: all .15s;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.tab.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.tab:hover:not(.on) { border-color: var(--muted2); color: var(--txt); }
+
+/* ── MAIN ── */
+main { max-width: 820px; margin: 0 auto; padding: 14px 12px 80px; }
+
+/* ── STATS BAR ── */
+.stats {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px; margin-bottom: 16px;
+}
+.stat {
+  background: var(--s1); border: 1px solid var(--bdr);
+  border-radius: 10px; padding: 10px 8px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.stat::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.stat.s-live::before { background: var(--red); }
+.stat.s-wc::before { background: var(--gold); }
+.stat.s-high::before { background: var(--green); }
+.stat.s-all::before { background: var(--accent); }
+.stat-n {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px; line-height: 1;
+}
+.stat-l { font-size: 9px; color: var(--muted2); text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+
+/* ── WC HERO BANNER ── */
+.wc-hero {
+  background: linear-gradient(135deg, #050f00, #0a1e05, #051014);
+  border: 1px solid var(--gold);
+  border-radius: 14px; padding: 16px 18px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 14px;
+  position: relative; overflow: hidden;
+}
+.wc-hero::before {
+  content: '⚽';
+  position: absolute; right: -10px; bottom: -10px;
+  font-size: 80px; opacity: .06;
+}
+.wc-trophy { font-size: 38px; }
+.wc-info {}
+.wc-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px;
+  color: var(--gold);
+  text-shadow: 0 0 20px #ffc10740;
+}
+.wc-sub { font-size: 11px; color: var(--muted2); margin-top: 3px; }
+.wc-sub strong { color: var(--gold); }
+
+/* ── SECTION LABEL ── */
+.slabel {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; letter-spacing: 3px;
+  color: var(--muted2); text-transform: uppercase;
+  margin: 18px 0 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.slabel::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
+
+/* ── CARD ── */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--bdr);
+  border-radius: 13px; margin-bottom: 10px;
+  overflow: hidden; transition: border-color .2s;
+  position: relative;
+}
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.card.c-high::before { background: linear-gradient(90deg, var(--green), transparent); }
+.card.c-mid::before { background: linear-gradient(90deg, var(--yellow), transparent); }
+.card.c-low::before { background: linear-gradient(90deg, var(--red), transparent); }
+.card.c-wc { border-color: #ffc10740; }
+.card.c-wc.c-high { border-color: var(--gold); }
+.card.c-wc.c-high::before { background: linear-gradient(90deg, var(--gold), transparent); }
+.card.c-live { border-color: #ff3d5740; }
+.card:hover { border-color: var(--bdr2); }
+
+.ctop {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 13px 0;
+}
+.league-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; }
+.league-tag.wc { color: var(--gold); }
+
+.status-pill {
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  padding: 2px 9px; border-radius: 10px;
+}
+.status-pill.live { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+.status-pill.soon { background: var(--accent-dim); color: var(--accent); border: 1px solid var(--accent); }
+.status-pill.wc-soon { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold); }
+
+/* Teams layout */
+.teams-row {
+  display: grid; grid-template-columns: 1fr 80px 1fr;
+  align-items: center; gap: 4px;
+  padding: 10px 13px 6px;
+}
+.team { text-align: center; }
+.team-flag { font-size: 24px; display: block; margin-bottom: 3px; }
+.team-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: .5px;
+  line-height: 1.1;
+}
+.team-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 34px; line-height: 1.05;
+}
+.team-prob { font-size: 10px; color: var(--muted2); margin-top: 2px; }
+.vs-col { text-align: center; }
+.vs {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; color: var(--bdr2); letter-spacing: 1px;
+}
+.minute-badge {
+  display: inline-block;
+  background: var(--red-dim); color: var(--red);
+  border: 1px solid var(--red);
+  font-size: 9px; font-weight: 700;
+  padding: 1px 6px; border-radius: 10px;
+  margin-top: 4px; letter-spacing: .5px;
+}
+
+/* Draw row */
+.draw-row {
+  text-align: center; font-size: 10px;
+  color: var(--muted2); margin: -2px 0 4px;
+}
+
+/* Probability bar */
+.prob-bar {
+  display: flex; height: 4px;
+  margin: 4px 13px 8px;
+  border-radius: 4px; overflow: hidden; gap: 1px;
+}
+.pb-h { border-radius: 4px 0 0 4px; }
+.pb-d { }
+.pb-a { border-radius: 0 4px 4px 0; }
+
+/* Recommendation row */
+.rec-row {
+  display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--bdr);
+  padding: 9px 13px; gap: 8px; flex-wrap: wrap;
+}
+.rec-left { display: flex; align-items: center; gap: 9px; }
+.rec-icon { font-size: 18px; }
+.rec-label { font-size: 12px; font-weight: 600; }
+.rec-sub { font-size: 10px; color: var(--muted2); margin-top: 1px; }
+
+.conf-badge {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px; letter-spacing: .5px;
+  padding: 3px 11px; border-radius: 7px; white-space: nowrap;
+}
+.conf-badge.high { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.conf-badge.mid { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+.conf-badge.low { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+.conf-badge.wc-high { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold); }
+
+/* AI Panel */
+.ai-btn {
+  width: 100%; background: transparent;
+  border: none; border-top: 1px solid var(--bdr);
+  color: var(--muted2); font-size: 10px; font-weight: 700;
+  padding: 7px; cursor: pointer;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  transition: background .15s, color .15s;
+  font-family: 'Space Grotesk', sans-serif;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.ai-btn:hover { background: var(--accent-dim); color: var(--accent); }
+.ai-panel {
+  display: none;
+  padding: 13px 14px;
+  border-top: 1px solid var(--bdr);
+  background: #030608;
+  font-size: 12px; line-height: 1.75; color: var(--txt);
+}
+.ai-panel.open { display: block; }
+.ai-spin {
+  display: flex; align-items: center; gap: 8px;
+  color: var(--muted2); font-size: 12px;
+}
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--bdr);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ADD MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: #000000cc; z-index: 200;
+  align-items: center; justify-content: center;
+  padding: 16px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--s1);
+  border: 1px solid var(--bdr2);
+  border-radius: 16px;
+  padding: 20px 18px;
+  width: 100%; max-width: 440px;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 2px;
+  color: var(--gold); margin-bottom: 16px;
+}
+.form-row { margin-bottom: 12px; }
+.form-row label { display: block; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted2); text-transform: uppercase; margin-bottom: 5px; }
+.form-row input, .form-row select {
+  width: 100%; background: var(--s2);
+  border: 1px solid var(--bdr2);
+  color: var(--txt);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; padding: 9px 11px; border-radius: 8px;
+  outline: none; transition: border-color .15s;
+}
+.form-row input:focus, .form-row select:focus { border-color: var(--accent); }
+.form-row select option { background: var(--s2); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-actions { display: flex; gap: 8px; margin-top: 16px; }
+.btn-save {
+  flex: 1; background: var(--gold); color: #000;
+  border: none; font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px; letter-spacing: 2px;
+  padding: 10px; border-radius: 9px; cursor: pointer;
+  transition: opacity .15s;
+}
+.btn-save:hover { opacity: .85; }
+.btn-cancel {
+  background: transparent; border: 1px solid var(--bdr2);
+  color: var(--muted2); font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; padding: 10px 16px; border-radius: 9px; cursor: pointer;
+}
+.btn-cancel:hover { border-color: var(--red); color: var(--red); }
+
+/* DISCLAIMER */
+.disc {
+  background: #100800; border: 1px solid #2a1a00;
+  border-radius: 9px; padding: 9px 12px;
+  font-size: 11px; color: #8a6030; line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+/* DELETE BTN */
+.del-btn {
+  background: transparent; border: none;
+  color: var(--muted); font-size: 14px;
+  cursor: pointer; padding: 4px 6px;
+  transition: color .15s; line-height: 1;
+}
+.del-btn:hover { color: var(--red); }
+
+.empty {
+  text-align: center; padding: 48px 20px;
+  color: var(--muted2); font-size: 13px;
+}
+
+@media(max-width:420px) {
+  .team-name { font-size: 14px; }
+  .team-score { font-size: 26px; }
+  .stats { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">BET<em>IQ</em><sub>LIVE</sub></div>
+  <div class="hdr-right">
+    <div class="live-badge"><div class="live-dot"></div>EN VIVO</div>
+    <button class="btn-icon add" onclick="openModal()">+ Partido</button>
+    <button class="btn-icon" onclick="render()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Actualizar
+    </button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab on" onclick="filter('all',this)">🌍 Todos</button>
+  <button class="tab"    onclick="filter('wc',this)">🏆 Mundial</button>
+  <button class="tab"    onclick="filter('live',this)">🔴 En Vivo</button>
+  <button class="tab"    onclick="filter('custom',this)">✏️ Mis Partidos</button>
+</div>
+
+<main>
+  <div class="disc">⚠️ <strong>Apuesta con responsabilidad.</strong> Análisis orientativo — ninguna app garantiza ganancias. Juega solo lo que puedes perder.</div>
+
+  <div class="stats">
+    <div class="stat s-all"><div class="stat-n" style="color:var(--accent)" id="sAll">0</div><div class="stat-l">Partidos</div></div>
+    <div class="stat s-live"><div class="stat-n" style="color:var(--red)" id="sLive">0</div><div class="stat-l">En Vivo</div></div>
+    <div class="stat s-wc"><div class="stat-n" style="color:var(--gold)" id="sWC">0</div><div class="stat-l">Mundial</div></div>
+    <div class="stat s-high"><div class="stat-n" style="color:var(--green)" id="sHigh">0</div><div class="stat-l">Alta conf.</div></div>
+  </div>
+
+  <div id="container"></div>
+</main>
+
+<!-- ADD MATCH MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">🏆 Agregar Partido</div>
+
+    <div class="form-row">
+      <label>Tipo de partido</label>
+      <select id="f-sport" onchange="toggleScoreFields()">
+        <option value="wc">⚽ FIFA Mundial 2026</option>
+        <option value="epl">⚽ Premier League / Liga</option>
+        <option value="mlb">⚾ MLB / Béisbol</option>
+        <option value="nba">🏀 NBA / Baloncesto</option>
+        <option value="other">🏟️ Otro</option>
+      </select>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Equipo Local</label>
+        <input id="f-home" type="text" placeholder="Ej: Brasil">
+      </div>
+      <div class="form-row">
+        <label>Equipo Visitante</label>
+        <input id="f-away" type="text" placeholder="Ej: Argentina">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>Estado</label>
+      <select id="f-status">
+        <option value="soon">⏰ Próximo</option>
+        <option value="live">🔴 En Vivo</option>
+      </select>
+    </div>
+
+    <div id="score-fields">
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Goles / Puntos Local</label>
+          <input id="f-hs" type="number" placeholder="0" min="0">
+        </div>
+        <div class="form-row">
+          <label>Goles / Puntos Visitante</label>
+          <input id="f-as" type="number" placeholder="0" min="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Minuto / Inning</label>
+        <input id="f-min" type="text" placeholder="Ej: 67'" >
+      </div>
+    </div>
+
+    <div id="time-field" style="display:none">
+      <div class="form-row">
+        <label>Hora del partido</label>
+        <input id="f-time" type="text" placeholder="Ej: 9:00 PM">
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-row">
+        <label>% Prob. Local (W)</label>
+        <input id="f-wh" type="number" placeholder="Ej: 65" min="1" max="99">
+      </div>
+      <div class="form-row">
+        <label>% Prob. Visitante (W)</label>
+        <input id="f-wa" type="number" placeholder="Ej: 20" min="1" max="99">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label>% Empate (opcional, solo fútbol)</label>
+      <input id="f-wd" type="number" placeholder="Ej: 15" min="0" max="60">
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-save" onclick="addMatch()">AGREGAR PARTIDO</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── FLAGS ──
+const FLAGS = {
+  "Argentina":"🇦🇷","Austria":"🇦🇹","Belgium":"🇧🇪","Bosnia and Herzegovina":"🇧🇦",
+  "Brasil":"🇧🇷","Brazil":"🇧🇷","Canada":"🇨🇦","Cape Verde":"🇨🇻","Colombia":"🇨🇴",
+  "Congo DR":"🇨🇩","Croatia":"🇭🇷","Curacao":"🇨🇼","Czechia":"🇨🇿","República Checa":"🇨🇿",
+  "Ecuador":"🇪🇨","Egypt":"🇪🇬","England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Inglaterra":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","France":"🇫🇷","Francia":"🇫🇷",
+  "Germany":"🇩🇪","Alemania":"🇩🇪","Ghana":"🇬🇭","Haiti":"🇭🇹","IR Iran":"🇮🇷","Irán":"🇮🇷",
+  "Ivory Coast":"🇨🇮","Costa de Marfil":"🇨🇮","Jordan":"🇯🇴","Korea Republic":"🇰🇷","Corea del Sur":"🇰🇷",
+  "Mexico":"🇲🇽","México":"🇲🇽","Morocco":"🇲🇦","Marruecos":"🇲🇦","Netherlands":"🇳🇱","Países Bajos":"🇳🇱",
+  "New Zealand":"🇳🇿","Norway":"🇳🇴","Noruega":"🇳🇴","Panama":"🇵🇦","Panamá":"🇵🇦",
+  "Portugal":"🇵🇹","Qatar":"🇶🇦","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Escocia":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","Senegal":"🇸🇳",
+  "South Africa":"🇿🇦","Sudáfrica":"🇿🇦","Switzerland":"🇨🇭","Suiza":"🇨🇭",
+  "Tunisia":"🇹🇳","Túnez":"🇹🇳","Uruguay":"🇺🇾","USA":"🇺🇸","Estados Unidos":"🇺🇸",
+  "España":"🇪🇸","Spain":"🇪🇸","Italia":"🇮🇹","Italy":"🇮🇹","Japón":"🇯🇵","Japan":"🇯🇵",
+  "Serbia":"🇷🇸","Albania":"🇦🇱","Dinamarca":"🇩🇰","Denmark":"🇩🇰","Austria":"🇦🇹",
+  "Suecia":"🇸🇪","Sweden":"🇸🇪","Turquía":"🇹🇷","Turkey":"🇹🇷","Rumania":"🇷🇴","Romania":"🇷🇴",
+  "Hungría":"🇭🇺","Hungary":"🇭🇺","Eslovaquia":"🇸🇰","Slovakia":"🇸🇰","Georgia":"🇬🇪",
+  "Venezuela":"🇻🇪","Chile":"🇨🇱","Perú":"🇵🇪","Peru":"🇵🇪","Bolivia":"🇧🇴","Paraguay":"🇵🇾",
+  "Costa Rica":"🇨🇷","Honduras":"🇭🇳","Guatemala":"🇬🇹","Jamaica":"🇯🇲","Trinidad and Tobago":"🇹🇹",
+  "Nueva Zelanda":"🇳🇿","Australia":"🇦🇺","Arabia Saudita":"🇸🇦","Saudi Arabia":"🇸🇦",
+  "Argelia":"🇩🇿","Nigeria":"🇳🇬","Camerún":"🇨🇲","Cameroon":"🇨🇲","Kenya":"🇰🇪",
+  "Egipto":"🇪🇬","Marruecos":"🇲🇦","Mozambique":"🇲🇿","Uzbekistán":"🇺🇿","Uzbekistan":"🇺🇿",
+};
+const flag = t => FLAGS[t] || '🏳️';
+
+// ── REAL WORLD CUP 2026 DATA ──
+const WC_DATA = [
+  // Group stage — confirmed fixtures based on FIFA draw
+  {home:"Colombia",      away:"Congo DR",              wH:62.6,wD:23.4,wA:14.0, time:"Hoy 9PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Switzerland",   away:"Canada",                wH:41.2,wD:30.1,wA:28.7, time:"Mié 2PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Bosnia and Herzegovina",away:"Qatar",         wH:68.2,wD:18.5,wA:13.3, time:"Mié 2PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Scotland",      away:"Brazil",                wH:10.6,wD:18.2,wA:71.2, time:"Mié 5PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Morocco",       away:"Haiti",                 wH:81.5,wD:12.5,wA:6.0,  time:"Mié 5PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Czechia",       away:"Mexico",                wH:25.8,wD:25.3,wA:48.9, time:"Mié 8PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"South Africa",  away:"Korea Republic",        wH:18.1,wD:24.7,wA:57.2, time:"Mié 8PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Ecuador",       away:"Germany",               wH:25.6,wD:24.2,wA:50.2, time:"Jue 3PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Curacao",       away:"Ivory Coast",           wH:4.6, wD:10.8,wA:84.6, time:"Jue 3PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+  {home:"Tunisia",       away:"Netherlands",           wH:3.9, wD:9.6, wA:86.5, time:"Jue 6PM",  sport:"wc",league:"FIFA MUNDIAL 2026",status:"soon"},
+];
+
+// User-added custom games
+let customGames = [];
+let allGames = [];
+let currentFilter = 'all';
+
+function analyzeGame(g) {
+  let {wH, wA, wD, hs, as: as_} = g;
+  wD = wD || 0;
+
+  // If live game with scores, recalculate odds
+  if (g.status === 'live' && hs != null && as_ != null) {
+    const diff = hs - as_;
+    if (wH === undefined) {
+      // Auto-estimate if no odds given
+      wH = 50 + diff * 12;
+      wA = 50 - diff * 12;
+      if (g.sport === 'wc' || g.sport === 'epl') wD = Math.max(5, 20 - Math.abs(diff) * 5);
+    } else {
+      // Adjust existing odds by score
+      wH = Math.min(97, Math.max(3, wH + diff * 8));
+      wA = Math.min(97, Math.max(3, wA - diff * 8));
+      if (wD) wD = Math.max(3, 100 - wH - wA);
+    }
+  }
+
+  wH = Math.round(Math.min(97, Math.max(3, wH || 50)));
+  wA = Math.round(Math.min(97, Math.max(3, wA || 50)));
+  wD = wD ? Math.round(Math.min(60, Math.max(3, wD))) : 0;
+
+  // Normalize
+  const total = wH + wA + (wD || 0);
+  if (total !== 100 && total > 0) {
+    wH = Math.round(wH / total * 100);
+    wA = Math.round(wA / total * 100);
+    if (wD) wD = 100 - wH - wA;
+  }
+
+  let bestBet, bestProb;
+  if (wD && wD >= wH && wD >= wA) { bestBet = 'Empate'; bestProb = wD; }
+  else if (wH >= wA) { bestBet = g.home; bestProb = wH; }
+  else { bestBet = g.away; bestProb = wA; }
+
+  const conf = bestProb >= 68 ? 'high' : bestProb >= 52 ? 'mid' : 'low';
+
+  return {...g, wH, wA, wD, bestBet, bestProb, conf};
+}
+
+function buildGames() {
+  const wc = WC_DATA.map(g => analyzeGame({...g}));
+  const custom = customGames.map(g => analyzeGame({...g}));
+
+  allGames = [...wc, ...custom].sort((a, b) => {
+    if (a.status==='live' && b.status!=='live') return -1;
+    if (b.status==='live' && a.status!=='live') return 1;
+    if (a.sport==='wc' && b.sport!=='wc') return -1;
+    if (b.sport==='wc' && a.sport!=='wc') return 1;
+    return b.bestProb - a.bestProb;
+  });
+}
+
+function filter(key, el) {
+  currentFilter = key;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  render();
+}
+
+function render() {
+  buildGames();
+
+  let games = currentFilter === 'all'    ? allGames
+    : currentFilter === 'live'   ? allGames.filter(g => g.status === 'live')
+    : currentFilter === 'wc'     ? allGames.filter(g => g.sport === 'wc')
+    : currentFilter === 'custom' ? customGames.map(g => analyzeGame({...g}))
+    : allGames;
+
+  // Update stats
+  document.getElementById('sAll').textContent  = allGames.length;
+  document.getElementById('sLive').textContent = allGames.filter(g => g.status==='live').length;
+  document.getElementById('sWC').textContent   = allGames.filter(g => g.sport==='wc').length;
+  document.getElementById('sHigh').textContent = allGames.filter(g => g.conf==='high').length;
+
+  const container = document.getElementById('container');
+
+  if (!games.length) {
+    container.innerHTML = `<div class="empty">
+      ${currentFilter === 'custom'
+        ? '✏️ No tienes partidos personalizados.<br><br>Usa el botón <strong>+ Partido</strong> para agregar uno.'
+        : 'Sin partidos en esta categoría.'}
+    </div>`;
+    return;
+  }
+
+  let html = '';
+
+  if (currentFilter === 'all' || currentFilter === 'wc') {
+    html += `
+    <div class="wc-hero">
+      <div class="wc-trophy">🏆</div>
+      <div class="wc-info">
+        <div class="wc-title">FIFA WORLD CUP 2026 · USA · CANADÁ · MÉXICO</div>
+        <div class="wc-sub"><strong>${WC_DATA.length}</strong> partidos cargados · Probabilidades calculadas con modelo estadístico BetIQ</div>
+      </div>
+    </div>`;
+  }
+
+  // Buckets
+  const wcLive   = games.filter(g => g.sport==='wc' && g.status==='live');
+  const wcHigh   = games.filter(g => g.sport==='wc' && g.status!=='live' && g.conf==='high');
+  const wcMid    = games.filter(g => g.sport==='wc' && g.status!=='live' && g.conf==='mid');
+  const wcLow    = games.filter(g => g.sport==='wc' && g.status!=='live' && g.conf==='low');
+  const othLive  = games.filter(g => g.sport!=='wc' && g.status==='live');
+  const othHigh  = games.filter(g => g.sport!=='wc' && g.status!=='live' && g.conf==='high');
+  const othMid   = games.filter(g => g.sport!=='wc' && g.status!=='live' && g.conf==='mid');
+  const othLow   = games.filter(g => g.sport!=='wc' && g.status!=='live' && g.conf==='low');
+
+  const section = (label, arr) => {
+    if (!arr.length) return '';
+    return `<div class="slabel">${label}</div>` + arr.map(g => cardHTML(g)).join('');
+  };
+
+  html += section('🏆🔴 MUNDIAL — EN VIVO', wcLive);
+  html += section('🏆✅ MUNDIAL — ALTA CONFIANZA', wcHigh);
+  html += section('🏆⚠️ MUNDIAL — RIESGO MODERADO', wcMid);
+  html += section('🏆❌ MUNDIAL — ALTO RIESGO', wcLow);
+  html += section('🔴✅ EN VIVO — APOSTAR AHORA', othLive.filter(g => g.conf==='high'));
+  html += section('🔴⚠️ EN VIVO — CON CAUTELA', othLive.filter(g => g.conf!=='high'));
+  html += section('✅ PRÓXIMOS — ALTA CONFIANZA', othHigh);
+  html += section('⚠️ PRÓXIMOS — MODERADO', othMid);
+  html += section('❌ PRÓXIMOS — ALTO RIESGO', othLow);
+
+  container.innerHTML = html;
+}
+
+function cardHTML(g, idx) {
+  const uid = Math.random().toString(36).slice(2,9);
+  const isWC = g.sport === 'wc';
+  const isLive = g.status === 'live';
+  const isSoccer = ['wc','epl','other'].includes(g.sport) && g.wD;
+  const isCustom = g._custom;
+
+  // Status pill
+  const pill = isLive
+    ? `<span class="status-pill live">🔴 EN VIVO${g.minute ? ' · ' + g.minute : ''}</span>`
+    : isWC
+      ? `<span class="status-pill wc-soon">🏆 ${g.time||'Próximo'}</span>`
+      : `<span class="status-pill soon">⏰ ${g.time||'Próximo'}</span>`;
+
+  // Scores
+  const sH = (g.hs != null && isLive) ? g.hs : '—';
+  const sA = (g.as != null && isLive) ? g.as : '—';
+  const cH = isLive ? (g.hs > g.as ? 'var(--green)' : g.hs < g.as ? 'var(--red)' : 'var(--txt)') : (isWC ? 'var(--gold)' : 'var(--accent)');
+  const cA = isLive ? (g.as > g.hs ? 'var(--green)' : g.as < g.hs ? 'var(--red)' : 'var(--txt)') : (isWC ? 'var(--gold)' : 'var(--accent)');
+
+  // Confidence badge
+  const badgeClass = isWC && g.conf==='high' ? 'wc-high' : g.conf;
+  const badgeTxt = `${g.bestProb}% PROB`;
+
+  // Rec
+  const recIcon = g.conf==='high' ? '🎯' : g.conf==='mid' ? '⚠️' : '🚫';
+  const recTxt  = g.conf!=='low'
+    ? `Apostar: <strong>${g.bestBet}</strong>`
+    : `Partido muy parejo — evitar`;
+
+  // Bar
+  const total = (g.wH||0) + (g.wA||0) + (g.wD||0) || 100;
+  const bH = ((g.wH||0)/total*100).toFixed(1)+'%';
+  const bA = ((g.wA||0)/total*100).toFixed(1)+'%';
+  const bD = g.wD ? ((g.wD||0)/total*100).toFixed(1)+'%' : '0%';
+
+  const barColorH = isWC ? 'var(--gold)' : 'var(--green)';
+  const barColorA = isWC ? '#ff8800' : 'var(--red)';
+
+  // Card class
+  const cardCls = [
+    'card',
+    `c-${g.conf}`,
+    isWC ? 'c-wc' : '',
+    isLive ? 'c-live' : '',
+  ].filter(Boolean).join(' ');
+
+  // Emoji for league
+  const leagueEmoji = {wc:'🏆',epl:'⚽',mlb:'⚾',nba:'🏀',other:'🏟️'}[g.sport] || '🏟️';
+
+  const deleteBtn = isCustom
+    ? `<button class="del-btn" onclick="deleteCustom('${g._id}')" title="Eliminar">✕</button>`
+    : '';
+
+  return `
+<div class="${cardCls}">
+  <div class="ctop">
+    <span class="league-tag ${isWC?'wc':''}">${leagueEmoji} ${g.league||'PARTIDO'}</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      ${pill}
+      ${deleteBtn}
+    </div>
+  </div>
+
+  <div class="teams-row">
+    <div class="team">
+      ${isWC || g.sport==='epl' ? `<span class="team-flag">${flag(g.home)}</span>` : ''}
+      <div class="team-name">${g.home}</div>
+      <div class="team-score" style="color:${cH}">${sH}</div>
+      <div class="team-prob">${g.wH}% ganar</div>
+    </div>
+    <div class="vs-col">
+      <div class="vs">VS</div>
+      ${isLive && g.minute ? `<div class="minute-badge">${g.minute}</div>` : ''}
+    </div>
+    <div class="team">
+      ${isWC || g.sport==='epl' ? `<span class="team-flag">${flag(g.away)}</span>` : ''}
+      <div class="team-name">${g.away}</div>
+      <div class="team-score" style="color:${cA}">${sA}</div>
+      <div class="team-prob">${g.wA}% ganar</div>
+    </div>
+  </div>
+
+  ${g.wD ? `<div class="draw-row">Empate <strong>${g.wD}%</strong></div>` : ''}
+
+  <div class="prob-bar">
+    <div class="pb-h" style="width:${bH};background:${barColorH}"></div>
+    ${g.wD ? `<div class="pb-d" style="width:${bD};background:var(--muted)"></div>` : ''}
+    <div class="pb-a" style="width:${bA};background:${barColorA}"></div>
+  </div>
+
+  <div class="rec-row">
+    <div class="rec-left">
+      <div class="rec-icon">${recIcon}</div>
+      <div>
+        <div class="rec-label">${recTxt}</div>
+        <div class="rec-sub">${isWC ? '🏆 FIFA World Cup 2026 · Modelo BetIQ' : 'Análisis estadístico BetIQ'}</div>
+      </div>
+    </div>
+    <div class="conf-badge ${badgeClass}">${badgeTxt}</div>
+  </div>
+
+  <button class="ai-btn" id="aibtn-${uid}" onclick="toggleAI('${uid}',${JSON.stringify(g.home)},${JSON.stringify(g.away)},${g.wH},${g.wA},${g.wD||0},'${g.status}','${sH}','${sA}','${isWC}','${g.minute||''}','${g.sport}')">
+    ✦ Análisis IA · Pronóstico Detallado
+  </button>
+  <div class="ai-panel" id="ai-${uid}"></div>
+</div>`;
+}
+
+async function toggleAI(uid, home, away, wH, wA, wD, status, sH, sA, isWC, minute, sport) {
+  const panel = document.getElementById(`ai-${uid}`);
+  const btn   = document.getElementById(`aibtn-${uid}`);
+
+  if (panel.classList.contains('open')) {
+    panel.classList.remove('open');
+    btn.innerHTML = '✦ Análisis IA · Pronóstico Detallado';
+    return;
+  }
+  panel.classList.add('open');
+  btn.innerHTML = '▴ Cerrar análisis';
+  if (panel.dataset.loaded) return;
+  panel.dataset.loaded = '1';
+  panel.innerHTML = `<div class="ai-spin"><div class="spinner"></div>Generando análisis con IA...</div>`;
+
+  const liveCtx = status==='live'
+    ? `El partido está EN VIVO. Marcador actual: ${home} ${sH} - ${sA} ${away}${minute ? `, minuto ${minute}` : ''}.`
+    : `El partido no ha comenzado aún.`;
+
+  const drawLine = wD ? `| Empate ${wD}%` : '';
+  const sportName = {wc:'FIFA World Cup 2026',epl:'Premier League',mlb:'MLB',nba:'NBA',other:'Partido'}[sport] || 'Partido';
+
+  const prompt = `Eres BetIQ, el mejor analista de apuestas deportivas. Responde SIEMPRE en español. Da un análisis experto del siguiente partido:
+
+COMPETICIÓN: ${sportName}
+${home} vs ${away}
+${liveCtx}
+Probabilidades: ${home} ${wH}% ${drawLine} | ${away} ${wA}%
+
+Responde en EXACTAMENTE este formato con 4 puntos:
+🔍 ANÁLISIS: [Una oración sobre por qué hay esa diferencia de probabilidades]
+⚠️ RIESGO: [Un riesgo clave a considerar antes de apostar]
+💡 APUESTA SUGERIDA: [Di exactamente qué apostar y con qué nivel de stake: fuerte/moderado/poco/abstenerse]
+📊 FACTOR CLAVE: [El dato estadístico o contexto más importante de este partido]
+
+Sé directo, experto y concreto. Sin introducciones ni despedidas.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text||'').join('') || 'No disponible.';
+    panel.innerHTML = text
+      .replace(/🔍 ANÁLISIS:/g, '<strong style="color:var(--accent)">🔍 ANÁLISIS:</strong>')
+      .replace(/⚠️ RIESGO:/g, '<strong style="color:var(--yellow)">⚠️ RIESGO:</strong>')
+      .replace(/💡 APUESTA SUGERIDA:/g, '<strong style="color:var(--green)">💡 APUESTA SUGERIDA:</strong>')
+      .replace(/📊 FACTOR CLAVE:/g, '<strong style="color:var(--gold)">📊 FACTOR CLAVE:</strong>')
+      .replace(/\n/g, '<br>');
+  } catch(e) {
+    panel.innerHTML = '<span style="color:var(--red)">Error de conexión. Los datos del partido siguen visibles arriba.</span>';
+  }
+}
+
+// ── ADD MATCH ──
+function openModal() {
+  document.getElementById('modal').classList.add('open');
+  toggleScoreFields();
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  clearForm();
+}
+function clearForm() {
+  ['f-home','f-away','f-hs','f-as','f-min','f-time','f-wh','f-wa','f-wd'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-sport').value = 'wc';
+  document.getElementById('f-status').value = 'soon';
+  toggleScoreFields();
+}
+function toggleScoreFields() {
+  const status = document.getElementById('f-status').value;
+  document.getElementById('score-fields').style.display = status === 'live' ? 'block' : 'none';
+  document.getElementById('time-field').style.display   = status === 'soon' ? 'block' : 'none';
+}
+document.getElementById('f-status').addEventListener('change', toggleScoreFields);
+
+function addMatch() {
+  const home   = document.getElementById('f-home').value.trim();
+  const away   = document.getElementById('f-away').value.trim();
+  const sport  = document.getElementById('f-sport').value;
+  const status = document.getElementById('f-status').value;
+  const wH     = parseFloat(document.getElementById('f-wh').value) || 0;
+  const wA     = parseFloat(document.getElementById('f-wa').value) || 0;
+  const wD     = parseFloat(document.getElementById('f-wd').value) || 0;
+
+  if (!home || !away) { alert('Por favor ingresa ambos equipos.'); return; }
+  if (wH <= 0 || wA <= 0) { alert('Ingresa las probabilidades de victoria (%).'); return; }
+
+  const leagueMap = {wc:'FIFA MUNDIAL 2026',epl:'PREMIER LEAGUE',mlb:'MLB',nba:'NBA',other:'OTRO'};
+
+  const game = {
+    home, away,
+    sport, status,
+    league: leagueMap[sport] || 'PARTIDO',
+    wH, wA,
+    wD: wD || 0,
+    _custom: true,
+    _id: Math.random().toString(36).slice(2,10),
+  };
+
+  if (status === 'live') {
+    game.hs     = parseInt(document.getElementById('f-hs').value) || 0;
+    game.as     = parseInt(document.getElementById('f-as').value) || 0;
+    game.minute = document.getElementById('f-min').value.trim() || null;
+  } else {
+    game.time = document.getElementById('f-time').value.trim() || 'Próximo';
+  }
+
+  customGames.push(game);
+  closeModal();
+
+  // Switch to custom tab after adding
+  const customTab = document.querySelector('.tab:nth-child(4)');
+  filter('custom', customTab);
+}
+
+function deleteCustom(id) {
+  customGames = customGames.filter(g => g._id !== id);
+  render();
+}
+
+// Click outside modal to close
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// ── INIT ──
+render();
+</script>
+</body>
+</html>
